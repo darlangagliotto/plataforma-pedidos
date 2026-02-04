@@ -4,6 +4,7 @@ using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Application.Services;
 using OrderService.Api.Infrastructure.Data;
 using System.Text;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,11 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+// Redis
+var redisConnection = builder.Configuration.GetValue<string>("Redis:Connection");
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(redisConnection!)
+);
 
 var app = builder.Build();
 

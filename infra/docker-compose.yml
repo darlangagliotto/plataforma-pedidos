@@ -9,6 +9,7 @@ services:
       - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Redis__Connection=redis:6379
   
   authservice:
     build:
@@ -21,3 +22,9 @@ services:
       - Jwt__Key=SUPER_SECRET_KEY_MICROSERVICOS_2026_ORDER_AUTH_1234567890123456
       - Jwt__Issuer=AuthService
       - Jwt__Audience=OrderService
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"    

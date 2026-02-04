@@ -18,5 +18,16 @@ namespace OrderService.Api.Controllers
             var result = await _orderService.CreateAsync(newOrder);
             return CreatedAtAction(nameof(Create), result);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var order = await _orderService.GetByIdAsync(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
     }
 }
