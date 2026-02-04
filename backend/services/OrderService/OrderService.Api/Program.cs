@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Application.Services;
 using OrderService.Api.Infrastructure.Data;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,23 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 
 // Dependency Injection
 builder.Services.AddScoped<IOrderService, OrderService.Api.Application.Services.OrderService>();
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "auth-service",
+            ValidAudience = "order-service",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes("super-secret-key-123"))
+        };
+    });
+
 
 var app = builder.Build();
 
