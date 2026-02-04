@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using OrderService.Api.Application.Interfaces;
+using OrderService.Api.Application.Services;
+using OrderService.Api.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -24,6 +29,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
+
+// EF Core InMemory
+builder.Services.AddDbContext<OrderDbContext>(options =>
+{
+    options.UseInMemoryDatabase("OrdersDb");
+});
+
+// Dependency Injection
+builder.Services.AddScoped<IOrderService, OrderService.Api.Application.Services.OrderService>();
 
 var app = builder.Build();
 

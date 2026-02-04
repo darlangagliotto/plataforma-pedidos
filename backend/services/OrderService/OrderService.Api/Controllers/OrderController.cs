@@ -1,8 +1,6 @@
-using System.Text;
-using System.Text.Json;
-using OrderService.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json;
+using OrderService.Api.Application.DTOs;
+using OrderService.Api.Application.Interfaces;
 
 namespace OrderService.Api.Controllers
 {
@@ -10,30 +8,15 @@ namespace OrderService.Api.Controllers
     [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
+        private readonly IOrderService _orderService;
 
-        public OrderController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClient = httpClientFactory.CreateClient();
-        }
+        public OrderController(IOrderService orderService) => _orderService = orderService;
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateOrderRequest newOrder)
         {
-            var createdOrder = new
-            {
-                Id = Random.Shared.Next(1000, 9999),
-                Product = newOrder.Product,
-                Quantity = newOrder.Quantity,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _httpClient.PostAsJsonAsync(
-                "http://localhost:5103/api/webhook",
-                createdOrder
-            );
-
-            return Created(string.Empty, createdOrder);
+            var result = await _orderService.CreateAsync(newOrder);
+            return CreatedAtAction(nameof(Create), result);
         }
     }
 }

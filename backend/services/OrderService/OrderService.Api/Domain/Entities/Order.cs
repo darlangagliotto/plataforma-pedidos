@@ -1,6 +1,6 @@
-namespace OrderService.Api.Models;
+namespace OrderService.Api.Domain.Entities;
 
-public class OrderResponse
+public class Order
 {
     public int Id { get; set; }
     public string Product { get; set; } = string.Empty;

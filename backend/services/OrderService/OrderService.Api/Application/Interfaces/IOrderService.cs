@@ -1,0 +1,8 @@
+using OrderService.Api.Application.DTOs;
+
+namespace OrderService.Api.Application.Interfaces;
+
+public interface IOrderService
+{
+    Task<OrderResponse> CreateAsync(CreateOrderRequest request);
+}
