@@ -10,6 +10,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Redis__Connection=redis:6379
+      - Jwt__Key=SUPER_SECRET_KEY_MICROSERVICOS_2026_ORDER_AUTH_1234567890123456
+      - Jwt__Issuer=AuthService
+      - Jwt__Audience=OrderService
   
   authservice:
     build:
@@ -19,6 +22,7 @@ services:
       - "5002:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Redis__Connection=redis:6379
       - Jwt__Key=SUPER_SECRET_KEY_MICROSERVICOS_2026_ORDER_AUTH_1234567890123456
       - Jwt__Issuer=AuthService
       - Jwt__Audience=OrderService

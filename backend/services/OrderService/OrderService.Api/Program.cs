@@ -42,6 +42,10 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 // Dependency Injection
 builder.Services.AddScoped<IOrderService, OrderService.Api.Application.Services.OrderService>();
 
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -51,18 +55,24 @@ builder.Services.AddAuthentication("Bearer")
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "auth-service",
-            ValidAudience = "order-service",
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("super-secret-key-123"))
+                Encoding.UTF8.GetBytes(jwtKey!))
         };
     });
 
 // Redis
 var redisConnection = builder.Configuration.GetValue<string>("Redis:Connection");
+var redisOptions = ConfigurationOptions.Parse(redisConnection!);
+redisOptions.AbortOnConnectFail = false;
+
 builder.Services.AddSingleton<IConnectionMultiplexer>(
-    ConnectionMultiplexer.Connect(redisConnection!)
+    ConnectionMultiplexer.Connect(redisOptions)
 );
+
+// Register Cache Service
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
 var app = builder.Build();
 
@@ -90,6 +100,7 @@ app.UseHttpsRedirection();
  * Middleware de autorização
  * (JWT será adicionado depois)
  */
+app.UseAuthentication();
 app.UseAuthorization();
 
 /*

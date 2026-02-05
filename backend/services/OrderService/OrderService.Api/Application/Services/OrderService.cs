@@ -1,5 +1,6 @@
 using System.Data.Common;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using OrderService.Api.Application.DTOs;
 using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Infrastructure.Data;
@@ -11,9 +12,9 @@ namespace OrderService.Api.Application.Services;
 public class OrderService : IOrderService
 {
     private readonly OrderDbContext _context;
-    private readonly IConnectionMultiplexer _redis;
+    private readonly ICacheService _redis;
 
-    public OrderService(OrderDbContext context, IConnectionMultiplexer redis) 
+    public OrderService(OrderDbContext context, ICacheService redis) 
     { 
         _context = context;
         _redis = redis;
@@ -31,19 +32,20 @@ public class OrderService : IOrderService
         _context.Orders.Add(orderEntity);
         await _context.SaveChangesAsync();
 
-        var response = new OrderResponse
-        {
-            Id = orderEntity.Id,
-            Product = orderEntity.Product,
-            Quantity = orderEntity.Quantity,
-            CreatedAt = orderEntity.CreatedAt
-        };
+        // var response = new OrderResponse
+        // {
+        //     Id = orderEntity.Id,
+        //     Product = orderEntity.Product,
+        //     Quantity = orderEntity.Quantity,
+        //     CreatedAt = orderEntity.CreatedAt
+        // };
 
-        // salva no redis
-        var dbRedis = _redis.GetDatabase();
-        await dbRedis.StringSetAsync(
+         var response = MapToResponse(orderEntity);
+
+        // salva no redis        
+        await _redis.SetAsync(
             GetCacheKey(orderEntity.Id),
-            JsonSerializer.Serialize(response),
+            response,
             TimeSpan.FromMinutes(30)
         );
 
@@ -52,35 +54,48 @@ public class OrderService : IOrderService
 
     public async Task<OrderResponse?> GetByIdAsync(int orderId)
     {
-        var db = _redis.GetDatabase();
-        var cached = await db.StringGetAsync(GetCacheKey(orderId));
+        var cached = await _redis.GetAsync<OrderResponse>(GetCacheKey(orderId));
 
-        if (cached.HasValue)
+        if (cached != null)
         {
-            return JsonSerializer.Deserialize<OrderResponse>(cached.ToString());
+            return cached;
         }
 
         // Busca no banco se não estiver no cache
         var orderEntity = await _context.Orders.FindAsync(orderId);
-        if (orderEntity == null) return null;
-
-        var response = new OrderResponse
+        if (orderEntity == null) 
         {
-            Id = orderEntity.Id,
-            Product = orderEntity.Product,
-            Quantity = orderEntity.Quantity,
-            CreatedAt = orderEntity.CreatedAt
-        };
+            return null;
+        }
+
+        // var response = new OrderResponse
+        // {
+        //     Id = orderEntity.Id,
+        //     Product = orderEntity.Product,
+        //     Quantity = orderEntity.Quantity,
+        //     CreatedAt = orderEntity.CreatedAt
+        // };
+
+        var response = MapToResponse(orderEntity);
 
         // Salva no cache
-        await db.StringSetAsync(
+        await _redis.SetAsync(
             GetCacheKey(orderEntity.Id),
-            JsonSerializer.Serialize(response),
+            response,
             TimeSpan.FromMinutes(30)
         );
 
         return response;
     }
 
-    private string GetCacheKey(int orderId) => $"order:{orderId}";
+    private static OrderResponse MapToResponse(DbOrder order) =>
+        new()
+        {
+          Id = order.Id,
+          Product = order.Product,
+          Quantity = order.Quantity,
+          CreatedAt = order.CreatedAt  
+        };
+
+    private static string GetCacheKey(int orderId) => $"order:{orderId}";
 }

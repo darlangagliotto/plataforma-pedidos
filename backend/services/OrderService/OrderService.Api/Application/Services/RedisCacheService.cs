@@ -1,15 +1,15 @@
 using StackExchange.Redis;
 using System.Text.Json;
+using OrderService.Api.Application.Interfaces;
 
 namespace OrderService.Api.Application.Services;
 
-public class RedisCacheService
+public class RedisCacheService : ICacheService
 {
     private readonly IDatabase _database;
 
-    public RedisCacheService(string connectionString)
+    public RedisCacheService(IConnectionMultiplexer redis)
     {
-        var redis = ConnectionMultiplexer.Connect(connectionString);
         _database = redis.GetDatabase();
     }
 

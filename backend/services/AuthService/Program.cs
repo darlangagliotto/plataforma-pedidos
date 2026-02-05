@@ -26,23 +26,24 @@ builder.Services.AddEndpointsApiExplorer();
  */
 builder.Services.AddSwaggerGen();
 
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-       options.TokenValidationParameters = new()
-       {
-           ValidateIssuer = true,
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],   // pegar do Docker
-            ValidAudience = jwtSettings["Audience"], // pegar do Docker
-            IssuerSigningKey = new SymmetricSecurityKey(key) // usa a variável de ambiente
-       };
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey!))
+        };
     });
 
 var app = builder.Build();
@@ -71,6 +72,7 @@ app.UseHttpsRedirection();
  * Middleware de autorização
  * (JWT será adicionado depois)
  */
+app.UseAuthentication();
 app.UseAuthorization();
 
 /*

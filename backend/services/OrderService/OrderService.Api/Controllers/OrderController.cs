@@ -5,7 +5,7 @@ using OrderService.Api.Application.Interfaces;
 namespace OrderService.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/order")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
