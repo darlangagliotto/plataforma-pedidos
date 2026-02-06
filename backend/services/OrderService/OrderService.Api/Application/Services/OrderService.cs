@@ -5,6 +5,8 @@ using OrderService.Api.Application.DTOs;
 using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Infrastructure.Data;
 using StackExchange.Redis;
+using OrderService.Api.Application.Events;
+using OrderService.Api.Application.Messaging;
 using DbOrder = OrderService.Api.Domain.Entities.Order;
 
 namespace OrderService.Api.Application.Services;
@@ -14,10 +16,13 @@ public class OrderService : IOrderService
     private readonly OrderDbContext _context;
     private readonly ICacheService _redis;
 
-    public OrderService(OrderDbContext context, ICacheService redis) 
+    private readonly IEventPublisher _publisher;
+
+    public OrderService(OrderDbContext context, ICacheService redis, IEventPublisher publisher) 
     { 
         _context = context;
         _redis = redis;
+        _publisher = publisher;
     }
 
     public async Task<OrderResponse> CreateAsync(CreateOrderRequest request)
@@ -47,6 +52,17 @@ public class OrderService : IOrderService
             GetCacheKey(orderEntity.Id),
             response,
             TimeSpan.FromMinutes(30)
+        );
+
+        // evento de dominio
+
+        await _publisher.PublishAsync(
+            new OrderCreatedEvent(
+                orderEntity.Id,
+                orderEntity.Product,
+                orderEntity.Quantity,
+                orderEntity.CreatedAt
+            )
         );
 
         return response;
