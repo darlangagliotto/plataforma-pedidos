@@ -163,31 +163,137 @@ Responsável por:
 
 ---
 
-### ⏭️ Aula 9 – Testes no Backend
+⏭️ Aula 9 – Frontend React + TypeScript (base real)
+Objetivo
 
-* Testes de integração
-* Testes de API
-* Estratégias de validação
+Criar um frontend de verdade, pronto para mercado, consumindo seu backend.
 
----
+Conteúdo
 
-### ⏭️ Aula 10 – Frontend React + TypeScript
+Setup React + TypeScript
 
-* Consumo das APIs
-* Estrutura moderna de frontend
-* Integração com backend
+Estrutura de pastas profissional
 
----
+Serviços de API (Axios / Fetch)
 
-### ⏭️ Aula 11 – Integração Fullstack
+Configuração de ambiente
 
-* Fluxo completo de pedidos
-* Autenticação end-to-end
+Tipagem dos contratos
 
----
+Página de criação de pedido
 
-### ⏭️ Aula 12 – CI/CD e Infra Moderna
+Página de listagem de pedidos
 
-* Pipelines
-* Build automatizado
-* Conceitos reais de mercado
+📌 Aqui o aluno vê o pedido nascer e aparecer na tela
+
+⏭️ Aula 10 – Integração Frontend ↔ Backend
+Objetivo
+
+Fechar o primeiro fluxo real da aplicação.
+
+Conteúdo
+
+Integração com OrderService
+
+Tratamento de loading / erro
+
+Validação de formulário
+
+Fluxo completo:
+
+UI → API → Banco → Cache → Evento
+
+
+Observando efeitos colaterais (audit)
+
+📌 Aqui a aplicação já funciona como produto
+
+⏭️ Aula 11 – Autenticação End-to-End
+Objetivo
+
+Transformar o projeto em algo empregável.
+
+Conteúdo
+
+JWT no backend
+
+Login / logout
+
+Proteção de rotas no frontend
+
+Interceptors de API
+
+Claims e contexto do usuário
+
+Fluxo autenticado completo
+
+📌 Aqui o projeto deixa de ser “demo” e vira plataforma
+
+⏭️ Aula 12 – Testes Automatizados (Backend + UI)
+
+Agora sim, testes no momento certo.
+
+Parte 1 – Testes de integração (Backend)
+
+Testes de API com WebApplicationFactory
+
+Banco em memória
+
+Testes de fluxo real
+
+Validação de status, payload, regras
+
+Parte 2 – Testes de UI com Playwright ⭐
+
+Setup Playwright
+
+Teste de criação de pedido via UI
+
+Teste de login
+
+Teste end-to-end completo
+
+Rodando local e em pipeline
+
+📌 Aqui você testa:
+
+“O usuário consegue criar um pedido do começo ao fim?”
+
+⏭️ Aula 13 – Integração Fullstack (consolidação)
+Objetivo
+
+Organizar, limpar e consolidar tudo.
+
+Revisão de arquitetura
+
+Ajustes de contratos
+
+Versionamento
+
+Observabilidade básica
+
+Logs úteis
+
+Padrões finais
+
+⏭️ Aula 14 – CI/CD e Infra Moderna
+
+Agora sim faz sentido.
+
+Conteúdo
+
+Pipeline (build + test)
+
+Build de backend
+
+Build de frontend
+
+Execução de testes Playwright no pipeline
+
+Conceitos reais de mercado:
+
+qualidade
+
+confiança
+
+deploy seguro

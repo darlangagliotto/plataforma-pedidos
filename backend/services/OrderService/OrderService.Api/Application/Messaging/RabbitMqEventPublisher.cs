@@ -11,37 +11,66 @@ namespace OrderService.Api.Application.Messaging
 {
     public class RabbitMqEventPublisher : IEventPublisher
     {
-        public readonly IModel _channel;
+        private readonly IModel? _channel;
+        private readonly bool _isConnected;
 
         public RabbitMqEventPublisher(IConfiguration configuration)
         {
-            var factory = new ConnectionFactory
+            _isConnected = false;
+            
+            try
             {
-                HostName = configuration["RabbitMQ:Host"]
-            };
+                var factory = new ConnectionFactory
+                {
+                    HostName = configuration["RabbitMQ:Host"],
+                    AutomaticRecoveryEnabled = true
+                };
 
-            var connection = factory.CreateConnection();
-            _channel = connection.CreateModel();
+                var connection = factory.CreateConnection();
+                _channel = connection.CreateModel();
 
-            _channel.ExchangeDeclare(
-                exchange: "order.events",
-                type: ExchangeType.Fanout,
-                durable: true
-            );            
+                _channel.ExchangeDeclare(
+                    exchange: "order.events",
+                    type: ExchangeType.Fanout,
+                    durable: true
+                );
+                
+                _isConnected = true;
+                Console.WriteLine("✓ RabbitMqEventPublisher: Connected successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ RabbitMqEventPublisher: Connection failed: {ex.Message}");
+            }
         }
 
         public Task PublishAsync<T>(T @event)
         {
-            var body = Encoding.UTF8.GetBytes(
-                JsonSerializer.Serialize(@event)
-            );
+            if (!_isConnected || _channel == null)
+            {
+                Console.WriteLine($"✗ RabbitMqEventPublisher: Not connected. Event not published: {typeof(T).Name}");
+                return Task.CompletedTask;
+            }
 
-            _channel.BasicPublish(
-                exchange: "order.events",
-                routingKey: "",
-                basicProperties: null,
-                body: body
-            );
+            try
+            {
+                var body = Encoding.UTF8.GetBytes(
+                    JsonSerializer.Serialize(@event)
+                );
+
+                _channel.BasicPublish(
+                    exchange: "order.events",
+                    routingKey: "",
+                    basicProperties: null,
+                    body: body
+                );
+                
+                Console.WriteLine($"✓ RabbitMqEventPublisher: Event published: {typeof(T).Name}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ RabbitMqEventPublisher: Failed to publish event: {ex.Message}");
+            }
 
             return Task.CompletedTask;
         }

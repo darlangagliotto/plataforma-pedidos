@@ -1,10 +1,6 @@
-using System.Data.Common;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using OrderService.Api.Application.DTOs;
 using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Infrastructure.Data;
-using StackExchange.Redis;
 using OrderService.Api.Application.Events;
 using OrderService.Api.Application.Messaging;
 using DbOrder = OrderService.Api.Domain.Entities.Order;

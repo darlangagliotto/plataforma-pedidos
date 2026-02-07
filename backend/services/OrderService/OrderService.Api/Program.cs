@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using OrderService.Api.Application.Interfaces;
 using OrderService.Api.Application.Services;
 using OrderService.Api.Infrastructure.Data;
+using OrderService.Api.Application.Messaging;
 using System.Text;
 using StackExchange.Redis;
 
@@ -41,6 +42,7 @@ builder.Services.AddDbContext<OrderDbContext>(options =>
 
 // Dependency Injection
 builder.Services.AddScoped<IOrderService, OrderService.Api.Application.Services.OrderService>();
+builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
