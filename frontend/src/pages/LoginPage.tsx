@@ -15,7 +15,7 @@ export function LoginPage({ onLogin }: { onLogin: (token: string) => void }) {
     return (
         <div className='max-w-sm mx-auto mt-20 space-y-4'>
             <Input value={userName} onChange={setUserName} placeholder='Usuário' />
-            <Input value={password} onChange={setPassword} placeholder='Senha' />
+            <Input type='password' value={password} onChange={setPassword} placeholder='Senha' />
             <Button onClick={handleLogin}>Entrar</Button>
         </div>
     )

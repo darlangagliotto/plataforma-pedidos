@@ -187,113 +187,152 @@ Página de listagem de pedidos
 📌 Aqui o aluno vê o pedido nascer e aparecer na tela
 
 ⏭️ Aula 10 – Integração Frontend ↔ Backend
-Objetivo
 
-Fechar o primeiro fluxo real da aplicação.
+Objetivo: conectar o frontend real ao backend real
 
-Conteúdo
+Conteúdo:
 
-Integração com OrderService
+Fluxo completo de pedidos (end-to-end)
 
-Tratamento de loading / erro
+Consumo das APIs reais (Auth e Order)
 
-Validação de formulário
+Configuração de variáveis de ambiente no Vite
 
-Fluxo completo:
+Login real com JWT
 
-UI → API → Banco → Cache → Evento
+Interceptor de requisições
 
+Token no localStorage
 
-Observando efeitos colaterais (audit)
+Proteção de rotas (PrivateRoute)
 
-📌 Aqui a aplicação já funciona como produto
+Tratamento de erros (401, 403, 500)
+
+UX básico de loading e erro
+
+📌 Resultado:
+
+Usuário faz login → cria pedido → visualiza pedidos prontos
+Tudo rodando via Docker Compose
 
 ⏭️ Aula 11 – Autenticação End-to-End
-Objetivo
 
-Transformar o projeto em algo empregável.
+Objetivo: consolidar segurança no fluxo completo
 
-Conteúdo
+Conteúdo:
 
-JWT no backend
+Revisão do JWT no backend
 
-Login / logout
+Claims e roles
 
-Proteção de rotas no frontend
+Middleware de autorização
 
-Interceptors de API
+Frontend respeitando permissões
 
-Claims e contexto do usuário
+Expiração de token
 
-Fluxo autenticado completo
+Logout
 
-📌 Aqui o projeto deixa de ser “demo” e vira plataforma
+Refresh token (conceito + simulação simples)
 
-⏭️ Aula 12 – Testes Automatizados (Backend + UI)
+Erros de autenticação no frontend
 
-Agora sim, testes no momento certo.
+📌 Resultado:
 
-Parte 1 – Testes de integração (Backend)
+Sistema fechado, seguro e coerente de ponta a ponta
 
-Testes de API com WebApplicationFactory
+⏭️ Aula 12 – Testes no Backend
+
+Objetivo: garantir qualidade sem quebrar arquitetura
+
+Conteúdo:
+
+Testes de integração com .NET
+
+WebApplicationFactory
 
 Banco em memória
 
-Testes de fluxo real
+Testes de API (Auth e Order)
 
-Validação de status, payload, regras
+Estratégias de validação
 
-Parte 2 – Testes de UI com Playwright ⭐
+Testando endpoints protegidos (JWT)
 
-Setup Playwright
+Testando publicação de eventos (RabbitMQ – mockado)
 
-Teste de criação de pedido via UI
+📌 Resultado:
+
+Backend confiável e testável, padrão mercado
+
+⏭️ Aula 13 – Testes Automatizados de UI (Playwright)
+
+Objetivo: testar o sistema como o usuário usa
+
+Conteúdo:
+
+Conceito de testes E2E
+
+Playwright + TypeScript
+
+Setup do projeto
 
 Teste de login
 
-Teste end-to-end completo
+Teste de criação de pedido
 
-Rodando local e em pipeline
+Teste de listagem de pedidos
 
-📌 Aqui você testa:
+Execução local e via Docker
 
-“O usuário consegue criar um pedido do começo ao fim?”
+Boas práticas (selectors, fixtures)
 
-⏭️ Aula 13 – Integração Fullstack (consolidação)
-Objetivo
+📌 Resultado:
 
-Organizar, limpar e consolidar tudo.
+Testes rodando contra o sistema real
 
-Revisão de arquitetura
+⏭️ Aula 14 – Integração Fullstack (Consolidação)
 
-Ajustes de contratos
+Objetivo: fechar todas as pontas
 
-Versionamento
+Conteúdo:
 
-Observabilidade básica
+Revisão da arquitetura completa
 
-Logs úteis
+Fluxo real: Front → API → Evento → Consumer
 
-Padrões finais
+Observabilidade básica (logs)
 
-⏭️ Aula 14 – CI/CD e Infra Moderna
+Pontos de melhoria
 
-Agora sim faz sentido.
+Trade-offs arquiteturais
 
-Conteúdo
+O que isso ensina para o mercado
 
-Pipeline (build + test)
+📌 Resultado:
 
-Build de backend
+Visão clara de sistema real em produção
 
-Build de frontend
+⏭️ Aula 15 – CI/CD e Infra Moderna
 
-Execução de testes Playwright no pipeline
+Objetivo: visão profissional de entrega
 
-Conceitos reais de mercado:
+Conteúdo:
 
-qualidade
+Conceitos de CI/CD
 
-confiança
+Pipeline com GitHub Actions
 
-deploy seguro
+Build automático
+
+Testes automáticos no pipeline
+
+Build de imagens Docker
+
+Conceito de deploy (cloud / k8s – teórico)
+
+Boas práticas reais de mercado
+
+📌 Resultado:
+
+Projeto com cara de produto profissional

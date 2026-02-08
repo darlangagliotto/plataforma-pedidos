@@ -14,7 +14,9 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login(LoginRequest login)
     {
-        if(login.Username != "admin" || login.Password != "123")
+        Console.WriteLine($"Recebido -> Username: {login?.Username} |||| Password: {login?.Password}");
+
+        if(login?.Username != "admin" || login.Password != "123")
         {
             return Unauthorized();   
         }
