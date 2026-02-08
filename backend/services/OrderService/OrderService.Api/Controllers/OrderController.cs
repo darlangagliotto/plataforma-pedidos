@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Api.Application.DTOs;
 using OrderService.Api.Application.Interfaces;
@@ -6,6 +7,7 @@ namespace OrderService.Api.Controllers
 {
     [ApiController]
     [Route("api/order")]
+    //[AllowAnonymous]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -19,6 +21,13 @@ namespace OrderService.Api.Controllers
             return CreatedAtAction(nameof(Create), result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var orders = await _orderService.GetAllAsync();
+            return Ok(orders);
+        }
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

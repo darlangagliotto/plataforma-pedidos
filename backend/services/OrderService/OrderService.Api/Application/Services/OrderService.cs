@@ -4,6 +4,7 @@ using OrderService.Api.Infrastructure.Data;
 using OrderService.Api.Application.Events;
 using OrderService.Api.Application.Messaging;
 using DbOrder = OrderService.Api.Domain.Entities.Order;
+using Microsoft.EntityFrameworkCore;
 
 namespace OrderService.Api.Application.Services;
 
@@ -31,15 +32,7 @@ public class OrderService : IOrderService
         };
 
         _context.Orders.Add(orderEntity);
-        await _context.SaveChangesAsync();
-
-        // var response = new OrderResponse
-        // {
-        //     Id = orderEntity.Id,
-        //     Product = orderEntity.Product,
-        //     Quantity = orderEntity.Quantity,
-        //     CreatedAt = orderEntity.CreatedAt
-        // };
+        await _context.SaveChangesAsync();        
 
          var response = MapToResponse(orderEntity);
 
@@ -64,6 +57,15 @@ public class OrderService : IOrderService
         return response;
     }
 
+    public async Task<IEnumerable<OrderResponse>> GetAllAsync()
+    {
+        var orders = await _context.Orders
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
+
+        return orders.Select(MapToResponse);
+    }
+
     public async Task<OrderResponse?> GetByIdAsync(int orderId)
     {
         var cached = await _redis.GetAsync<OrderResponse>(GetCacheKey(orderId));
@@ -79,14 +81,6 @@ public class OrderService : IOrderService
         {
             return null;
         }
-
-        // var response = new OrderResponse
-        // {
-        //     Id = orderEntity.Id,
-        //     Product = orderEntity.Product,
-        //     Quantity = orderEntity.Quantity,
-        //     CreatedAt = orderEntity.CreatedAt
-        // };
 
         var response = MapToResponse(orderEntity);
 

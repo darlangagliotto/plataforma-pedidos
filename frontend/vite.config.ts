@@ -9,12 +9,12 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server:{      
       proxy: {
-        "/api": {
+        "/api/auth": {
           target:env.VITE_AUTH_API_URL,
           changeOrigin: true,
           secure: false
         },
-        "/orders": {
+        "/api/order": {
           target:env.VITE_ORDER_API_URL,
           changeOrigin: true,
           secure: false

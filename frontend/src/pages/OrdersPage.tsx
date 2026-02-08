@@ -4,12 +4,22 @@ import type { Order } from '../types/order'
 
 export function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([])
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getOrders().then(setOrders)
+        getOrders()
+            .then(setOrders)
+            .finally(() => setLoading(false))
     }, [])
 
-    return (
+    if (loading) {
+        return <p>Carregando pedidos...</p>
+    }
+
+    if (orders.length === 0){
+        return <p>nenhum pedido cadastrado.</p>
+    }
+    return (        
         <ul className='space-y-2'>
             {orders.map(o => (
                 <li key={o.id} className='border p-2 rounded'>
