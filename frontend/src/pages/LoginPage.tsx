@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { login } from '../api/auth.api'
 import { Button } from '../components/Button'
 import { Input } from '../components/Input'
 import { useAuth } from '../auth/AuthContext'

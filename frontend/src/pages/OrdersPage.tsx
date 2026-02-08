@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { getOrders } from '../api/order.api'
+import { getOrders } from '../services/orderService'
 import type { Order } from '../types/order'
 
-export function OrdersPage({ token }: { token: string }) {
+export function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([])
 
     useEffect(() => {
-        getOrders(token).then(setOrders)
+        getOrders().then(setOrders)
     }, [])
 
     return (

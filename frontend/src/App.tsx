@@ -1,19 +1,23 @@
-import { useState } from 'react'
 import { LoginPage } from './pages/LoginPage'
 import { CreateOrderPage } from './pages/CreateOrderPage'
 import { OrdersPage } from './pages/OrdersPage'
+import { AuthProvider } from './auth/AuthContext'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { ProtectedRoute } from './auth/ProtectedRoute'
 
 export default function App() {
-  const [token, setToken] = useState<string | null>(null)
+  return (    
+      <AuthProvider>        
+          <Routes>
+            <Route path='/login' element={<LoginPage />} />
 
-  if (!token) {
-    return <LoginPage onLogin={setToken} />
-  }
+            <Route element={<ProtectedRoute />}>
+              <Route path='/orders' element={<OrdersPage />} />
+              <Route path='/orders/create' element={<CreateOrderPage />} />
+            </Route>
 
-  return (
-    <div className='max-w-xl mx-auto mt-10 space-y-6'>
-      <CreateOrderPage token={token} />
-      <OrdersPage token={token} />
-    </div>
+            <Route path='*' element={<Navigate to="/login" />} />
+          </Routes>
+      </AuthProvider>
   )
 }
